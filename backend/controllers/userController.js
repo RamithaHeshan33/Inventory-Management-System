@@ -7,7 +7,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const registerUser = async(req, res) => {
-    const {name, email, password, role} = req.body;
+    const {name, email, password, role, profilePicture} = req.body;
     try {
         const existingUser = await User.findOne({email});
         if(existingUser) {
@@ -19,7 +19,8 @@ const registerUser = async(req, res) => {
             name,
             email,
             password: hashedPassword,
-            role
+            role,
+            profilePicture
         })
 
         await newUser.save();
