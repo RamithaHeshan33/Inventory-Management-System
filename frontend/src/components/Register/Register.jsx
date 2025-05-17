@@ -29,7 +29,7 @@ const Register = () => {
         <div className='register-page d-flex justify-content-center align-items-center vh-100'>
             <div className='register-container d-flex gap-5 justify-content-center align-items-center border border-2 rounded-3 shadow-lg p-5'>
                 <div className='left w-50'>
-                    <img src="res/login.png" alt="register" className="login-image" />
+                    <img src="res/register.png" alt="register" className="login-image" />
                 </div>
 
                 <div className='right w-50'>
