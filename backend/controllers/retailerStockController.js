@@ -39,7 +39,7 @@ exports.getStockByMultipleFields = getStockByMultipleFields;
 
 
 const addStock = async(req, res) => {
-    const { productId, quantity, warehouseId } = req.body;
+    const { stockName, productId, quantity, warehouseId } = req.body;
     try {
         // Check if product exists
         const productExists = await ProductModel.findById(productId);
@@ -53,7 +53,7 @@ const addStock = async(req, res) => {
             return res.status(400).json({ message: "Invalid warehouse user" });
         }
 
-        const newStock = new StockModel({ productId, quantity, warehouseId });
+        const newStock = new StockModel({ stockName, productId, quantity, warehouseId });
         await newStock.save();
         res.status(201).json(newStock);
     }
@@ -65,3 +65,25 @@ const addStock = async(req, res) => {
 }
 
 exports.addStock = addStock;
+
+const updateStock = async(req, res) => {
+    const { productId, warehouseId} = req.params;
+    const { quantity } = req.body;
+    try {
+        const stock = await StockModel.findOne({ productId, warehouseId });
+        if (!stock) {
+            return res.status(404).json({ message: "Stock not found" });
+        }
+
+        stock.quantity = quantity;
+        await stock.save();
+        res.status(200).json(stock);
+    }
+
+    catch(error) {
+        console.error("Error updating stock:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+exports.updateStock = updateStock;
