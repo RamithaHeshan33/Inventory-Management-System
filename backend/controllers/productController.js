@@ -117,7 +117,7 @@ const getProductByMultipleFields = async (req, res) => {
     if (expireDate) query.expireDate = new Date(expireDate);
 
     try {
-        const product = await ProductModel.findOne(query);
+        const product = await ProductModel.find(query);
 
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
