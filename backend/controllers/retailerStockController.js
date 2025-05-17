@@ -82,7 +82,7 @@ const updateStock = async (req, res) => {
             return res.status(404).json({ message: "Stock not found" });
         }
 
-        res.status(200).json(updatedStock); // ✅ Send the updated stock as a response
+        res.status(200).json(updatedStock);
     } catch (error) {
         console.error("Error updating stock:", error);
         res.status(500).json({ message: "Internal server error" });
