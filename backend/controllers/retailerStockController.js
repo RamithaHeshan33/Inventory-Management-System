@@ -66,24 +66,45 @@ const addStock = async(req, res) => {
 
 exports.addStock = addStock;
 
-const updateStock = async(req, res) => {
-    const { productId, warehouseId} = req.params;
-    const { quantity } = req.body;
+const updateStock = async (req, res) => {
+    const { id } = req.params;
+    const { stockName, productId, quantity, warehouseId } = req.body;
+
     try {
-        const stock = await StockModel.findOne({ productId, warehouseId });
-        if (!stock) {
+        const updatedStock = await StockModel.findByIdAndUpdate(id, {
+            stockName,
+            productId,
+            quantity,
+            warehouseId
+        }, { new: true });
+
+        if (!updatedStock) {
             return res.status(404).json({ message: "Stock not found" });
         }
 
-        stock.quantity = quantity;
-        await stock.save();
-        res.status(200).json(stock);
-    }
-
-    catch(error) {
+        res.status(200).json(updatedStock); // ✅ Send the updated stock as a response
+    } catch (error) {
         console.error("Error updating stock:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
 
 exports.updateStock = updateStock;
+
+const deleteStock = async(req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedStock = await StockModel.findByIdAndDelete(id);
+        if (!deletedStock) {
+            return res.status(404).json({ message: "Stock not found" });
+        }
+        res.status(200).json({ message: "Stock deleted successfully" });
+    }
+
+    catch(error) {
+        console.error("Error deleting stock:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+exports.deleteStock = deleteStock;
