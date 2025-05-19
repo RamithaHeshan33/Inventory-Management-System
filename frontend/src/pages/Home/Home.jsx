@@ -1,10 +1,21 @@
 import React from 'react'
 import NavBar from '../../components/NavBar/NavBar'
 import Footer from '../../components/Footer/Footer'
+import './Home.css'
 
 function Home() {
   return (
     <div>
+      {/* Background video */}
+      <video
+        autoPlay
+        loop
+        muted
+        className="video-background"
+      >
+        <source src="res/background.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
       <NavBar />
 
       <div className='d-flex justify-content-center align-items-center'>
