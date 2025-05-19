@@ -5,6 +5,10 @@ import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import NotFound from './pages/NotFound/NotFound';
+import Features from './pages/Features/Features';
+import About from './pages/About/About';
+import Roles from './pages/Roles/Roles';
+import Contact from './pages/Contact/Contact';
 
 function App() {
 
@@ -14,6 +18,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/roles" element={<Roles />} />
+
 
 
         <Route path='*' element={<NotFound />} />
