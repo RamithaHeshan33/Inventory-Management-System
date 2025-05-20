@@ -9,7 +9,7 @@ function About() {
         <NavBar />
 
           <div className='header text-center'>
-            <h1 className=' text-uppercase' style={{letterSpacing: '0.2rem'}}>About Us</h1>
+            <h1 className=' fw-bold text-uppercase' style={{letterSpacing: '0.2rem'}}>About Us</h1>
           </div>
 
           <div className="container d-flex justify-content-center align-items-center gap-5 fs-5 mb-5">
