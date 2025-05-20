@@ -1,0 +1,7 @@
+@media (max-width: 992px) {
+    .inline-lg {
+      display: inline-block;
+      vertical-align: top;
+      width: 100%;
+    }
+  }
