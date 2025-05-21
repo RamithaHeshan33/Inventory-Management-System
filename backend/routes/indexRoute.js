@@ -5,6 +5,7 @@ const router = express.Router();
 const userRoutes = require("./userRoutes");
 const productRoutes = require("./productRoutes");
 const retailerStockRoutes = require("./retailerStockRoutes");
+const categoryRoutes = require("./categoryRoutes");
 
 // User Routes
 router.use("/users", userRoutes);
@@ -14,5 +15,8 @@ router.use("/products", productRoutes);
 
 // Retailer Stock Routes
 router.use("/stocks", retailerStockRoutes);
+
+// Category Routes
+router.use("/categories", categoryRoutes);
 
 module.exports = router;
