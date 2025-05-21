@@ -10,6 +10,8 @@ import About from './pages/About/About';
 import Roles from './pages/Roles/Roles';
 import Contact from './pages/Contact/Contact';
 
+import AdminDashboard from './pages/Admin/Dashboard/AdminDashboard';
+
 function App() {
 
   return (
@@ -23,7 +25,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/roles" element={<Roles />} />
 
-
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>

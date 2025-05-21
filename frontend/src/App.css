@@ -1,0 +1,12 @@
+.nav-link-light {
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    transition: background-image 2s ease, color 2s ease;
+  }
+  
+  .nav-link-light:hover {
+    background-image: linear-gradient(to right, #5f67ff, #7b7dfe);
+    color: white;
+  }
+  
