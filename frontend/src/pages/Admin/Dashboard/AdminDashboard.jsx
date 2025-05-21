@@ -4,7 +4,7 @@ import Dashboard from '../../../components/Dashboard/Dashboard'
 function AdminDashboard() {
   return (
     <div>
-        <Dashboard />
+        <Dashboard role="admin"/>
     </div>
   )
 }

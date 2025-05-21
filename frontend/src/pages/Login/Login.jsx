@@ -16,8 +16,26 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/users/login', formData);
-      localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');
+      const token = response.data.token;
+  
+      // Decode token payload (just for routing based on role)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      
+      // Store token and user
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(payload));
+
+      const role = payload.role;
+      if (role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (role === 'warehouse') {
+        navigate('/warehouse/dashboard');
+      } else if (role === 'retailer') {
+        navigate('/retailer/dashboard');
+      } else {
+        navigate('/login');
+      }
+
     } catch (error) {
       setMessage(error.response?.data?.message || 'Login failed');
     }
