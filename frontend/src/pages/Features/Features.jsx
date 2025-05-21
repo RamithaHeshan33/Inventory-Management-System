@@ -5,6 +5,14 @@ import Footer from '../../components/Footer/Footer'
 function Features() {
   return (
     <div>
+      <video
+        autoPlay
+        loop
+        muted
+        className="video-background"
+      >
+        <source src="res/background.mp4" type="video/mp4" />
+      </video>
         <NavBar />
 
           <div className="header text-center">
