@@ -11,6 +11,7 @@ import Roles from './pages/Roles/Roles';
 import Contact from './pages/Contact/Contact';
 
 import AdminDashboard from './pages/Admin/Dashboard/AdminDashboard';
+import WarehouseDashboard from './pages/Warehouse/WarehouseDashboard';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/roles" element={<Roles />} />
 
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/warehouse/dashboard" element={<WarehouseDashboard />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>
