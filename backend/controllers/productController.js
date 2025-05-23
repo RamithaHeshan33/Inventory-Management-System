@@ -1,10 +1,16 @@
 const ProductModel = require('../models/productModel');
+const CategoryModel = require('../models/categoryModel');
 
 const addProducts = async (req, res) => {
     const { name, description, price, category, image, wholesaleStock, expireDate } = req.body;
-  
+
     try {
-      const newProduct = new ProductModel({
+        const categoryExists = await CategoryModel.findById(category);
+        if (!categoryExists) {
+            return res.status(400).json({ message: "Invalid category ID" });
+        }
+
+        const newProduct = new ProductModel({
         name,
         description,
         price,
@@ -12,16 +18,16 @@ const addProducts = async (req, res) => {
         image,
         wholesaleStock,
         expireDate,
-      });
-      await newProduct.save();
-      res.status(201).json({ message: "Product added successfully", product: newProduct });
+        });
+        await newProduct.save();
+        res.status(201).json({ message: "Product added successfully", product: newProduct });
     }
 
     catch (error) {
-      console.error("Error adding product:", error);
-      res.status(500).json({ message: "Internal server error" });
+        console.error("Error adding product:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-  };
+};
 
 exports.addProducts = addProducts;
 
