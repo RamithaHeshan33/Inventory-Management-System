@@ -1,8 +1,9 @@
 const ProductModel = require('../models/productModel');
 const CategoryModel = require('../models/categoryModel');
+const subCategoryModel = require('../models/subCategoryModel');
 
 const addProducts = async (req, res) => {
-    const { name, description, price, category, image, wholesaleStock, expireDate } = req.body;
+    const { name, description, price, category, subCategory, image, wholesaleStock, expireDate } = req.body;
 
     try {
         const categoryExists = await CategoryModel.findById(category);
@@ -10,14 +11,20 @@ const addProducts = async (req, res) => {
             return res.status(400).json({ message: "Invalid category ID" });
         }
 
+        const subCategoryExists = await subCategoryModel.findById(subCategory);
+        if (!subCategoryExists) {
+            return res.status(400).json({ message: "Invalid sub-category ID" });
+        }
+
         const newProduct = new ProductModel({
-        name,
-        description,
-        price,
-        category,
-        image,
-        wholesaleStock,
-        expireDate,
+            name,
+            description,
+            price,
+            category,
+            subCategory,
+            image,
+            wholesaleStock,
+            expireDate,
         });
         await newProduct.save();
         res.status(201).json({ message: "Product added successfully", product: newProduct });

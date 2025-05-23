@@ -17,6 +17,11 @@ const productSchema = new mongoose.Schema({
         ref: "Category",
         required: true
     },
+    subCategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SubCategory",
+        required: true
+    },
     image: {
         type: String,
         default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSIHAgAt1qr3dZoRVKjpw4p2qddppl7TRnog&s"
