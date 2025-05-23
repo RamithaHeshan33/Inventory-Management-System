@@ -7,6 +7,7 @@ const productRoutes = require("./productRoutes");
 const retailerStockRoutes = require("./retailerStockRoutes");
 const categoryRoutes = require("./categoryRoutes");
 const industryRoutes = require("./industryRoutes");
+const subCategoryRoutes = require("./subCategoryRoutes");
 
 // User Routes
 router.use("/users", userRoutes);
@@ -19,6 +20,9 @@ router.use("/stocks", retailerStockRoutes);
 
 // Category Routes
 router.use("/categories", categoryRoutes);
+
+// SubCategory Routes
+router.use("/subcategories", subCategoryRoutes);
 
 // Industry Routes
 router.use("/industries", industryRoutes);
