@@ -1,22 +1,31 @@
 const categoryModel = require('../models/categoryModel');
+const industryModel = require('../models/industryModel');
 
 // Create a new category
 const createCategory = async (req, res) => {
-    const {name, description} = req.body;
+    const {name, description, industry} = req.body;
     
-    if(!name || !description) {
+    if(!name || !description || !industry) {
         return res.status(400).json({message: "All fields are required"});
     }
 
     try {
+
+        const industryExists = await industryModel.findOne({industry});
+        if(industryExists) {
+            return res.status(400).json({message: "Industry already exists"});
+        }
+
         const category = await categoryModel.create({
             name,
-            description
+            description,
+            industry
         });
         res.status(201).json(category, {message: "Category created successfully"});
     }
 
     catch(error) {
+        console.error("Error creating category:", error);
         res.status(500).json({message: "Server error"});
     }
 }
@@ -70,12 +79,13 @@ exports.getCategoryById = getCategoryById;
 // update category
 const updateCategory = async (req, res) => {
     const {id} = req.params;
-    const {name, description} = req.body;
+    const {name, description, industry} = req.body;
 
     try {
         const category = await categoryModel.findByIdAndUpdate(id, {
             name,
             description,
+            industry
         }, {new: true});
 
         if(!category) {

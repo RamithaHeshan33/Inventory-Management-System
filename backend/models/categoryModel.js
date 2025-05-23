@@ -8,6 +8,11 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    industry: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Industry",
+        required: true
+    }
     
 }, {timestamps: true});
 
