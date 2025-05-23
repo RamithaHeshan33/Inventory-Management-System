@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../../pages/Login/Login.css';
@@ -11,8 +11,23 @@ const Register = () => {
     password: '',
     role: '',
     profilePicture: '',
+    industry: '',
   });
+  const [industries, setIndustries] = useState([]);
   const [error, setError] = useState('');
+
+  // Fetch industries from backend
+  useEffect(() => {
+    const fetchIndustries = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/industries/getAll');
+        setIndustries(response.data.industries);
+      } catch (error) {
+        console.error('Failed to fetch industries', error);
+      }
+    };
+    fetchIndustries();
+  }, []);
 
   const handleChange = (e) => {
     if (e.target.name === 'profilePicture') {
@@ -30,15 +45,15 @@ const Register = () => {
         form.append(key, value);
       });
 
-      await axios.post('http://localhost:5000/users/register', form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      await axios.post('http://localhost:5000/users/register', formData);
 
       navigate('/login');
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed');
     }
   };
+
+  const showIndustrySelect = formData.role === 'retailer' || formData.role === 'warehouse';
 
   return (
     <div className="register-page d-flex justify-content-center align-items-center vh-100 px-3">
@@ -95,6 +110,24 @@ const Register = () => {
                 <option value="marketing">Marketing</option>
                 <option value="retailer">Retailer</option>
               </select>
+
+              {showIndustrySelect && (
+                <select
+                  name="industry"
+                  value={formData.industry}
+                  onChange={handleChange}
+                  required
+                  className="form-select"
+                >
+                  <option value="">Select Industry</option>
+                  {industries.map((ind) => (
+                    <option key={ind._id} value={ind._id}>
+                      {ind.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+
               <input
                 type="file"
                 name="profilePicture"

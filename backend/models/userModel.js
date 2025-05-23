@@ -21,6 +21,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["admin", "retailer", "warehouse", "marketing"],
         default: "retailer"
+    },
+    industry: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Industry",
+        required: function () {
+            return this.role === "retailer" || this.role === "warehouse";
+        }
     }
 
 }, {timestamps: true})
