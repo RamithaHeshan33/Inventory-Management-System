@@ -1,6 +1,8 @@
- import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css'
+
+// Before login
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
@@ -10,8 +12,12 @@ import About from './pages/About/About';
 import Roles from './pages/Roles/Roles';
 import Contact from './pages/Contact/Contact';
 
+// Dashboard pages
 import AdminDashboard from './pages/Admin/Dashboard/AdminDashboard';
 import WarehouseDashboard from './pages/Warehouse/WarehouseDashboard';
+
+// Admin pages
+import ManageProducts from './pages/Admin/Manage_Products/ManageProducts';
 
 function App() {
 
@@ -28,6 +34,8 @@ function App() {
 
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/warehouse/dashboard" element={<WarehouseDashboard />} />
+
+        <Route path="/admin/manage_products" element={<ManageProducts />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>

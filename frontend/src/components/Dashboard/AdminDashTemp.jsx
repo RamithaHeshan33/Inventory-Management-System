@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import '../../CSS/Dashboards.css'
 
 function Dashboard() {
     const [openMenu, setOpenMenu] = useState(null);
@@ -30,7 +31,7 @@ function Dashboard() {
 
     return (
         <div>
-            <div className="side-bar border border-2" style={{ width: "20%", height: "100vh", position: "fixed", top: 0, left: 0 }}>
+            <div className="side-bar border border-2 rounded">
                 <h2 className="text-center mb-3">Welcome {userName}</h2>
                 <ul className="list-group">
                     
@@ -52,7 +53,7 @@ function Dashboard() {
                         )}
                     </li>
                     
-                    <li className="list-group-item nav-link-light"><Link to="/admin/settings" className='text-decoration-none text-light nav-link-light'>TEST</Link></li>
+                    <li className="list-group-item nav-link-light"><Link to="/admin/manage_products" className='text-decoration-none text-light nav-link-light'>Manage Products</Link></li>
                     
                     <li className="list-group-item nav-link-light"><Link to="/admin/reports" className='text-decoration-none text-light nav-link-light'>TEST</Link></li>
                 </ul>
