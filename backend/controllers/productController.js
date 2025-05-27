@@ -1,9 +1,12 @@
 const ProductModel = require('../models/productModel');
 const CategoryModel = require('../models/categoryModel');
 const subCategoryModel = require('../models/subCategoryModel');
+const userModel = require('../models/userModel');
 
 const addProducts = async (req, res) => {
-    const { name, description, price, category, subCategory, image, wholesaleStock, expireDate } = req.body;
+    const { name, description, price, category, subCategory, wholesaleStock, expireDate, quantity } = req.body;
+    const image = req.file ? req.file.path : undefined;
+    const userID = req.user._id;
 
     try {
         const categoryExists = await CategoryModel.findById(category);
@@ -16,6 +19,11 @@ const addProducts = async (req, res) => {
             return res.status(400).json({ message: "Invalid sub-category ID" });
         }
 
+        const userExists = await userModel.findById(userID);
+        if(!userExists) {
+            return res.status(400).json({ message: "Invalid user ID" });
+        }
+
         const newProduct = new ProductModel({
             name,
             description,
@@ -25,6 +33,8 @@ const addProducts = async (req, res) => {
             image,
             wholesaleStock,
             expireDate,
+            quantity,
+            userID
         });
         await newProduct.save();
         res.status(201).json({ message: "Product added successfully", product: newProduct });
@@ -76,7 +86,7 @@ exports.getAllProducts = getAllProducts;
 
 const updateProducts = async(req, res) => {
     const {id} = req.params;
-    const {name, description, price, category, image, wholesaleStock, expireDate} = req.body;
+    const {name, description, price, category, image, wholesaleStock, expireDate, quantity} = req.body;
     try {
         const product = await ProductModel.findByIdAndUpdate(id, {
             name,
@@ -85,7 +95,8 @@ const updateProducts = async(req, res) => {
             category,
             image,
             wholesaleStock,
-            expireDate
+            expireDate,
+            quantity
         }, {new: true});
 
         if(!product) {
@@ -95,6 +106,7 @@ const updateProducts = async(req, res) => {
     }
 
     catch(error) {
+        console.error("Error updating product:", error);
         res.status(500).json({message: "Internal server error"});
     }
 }

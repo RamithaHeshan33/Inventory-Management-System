@@ -10,44 +10,89 @@ function ManageProducts() {
   const [subCategories, setSubCategories] = useState([]);
   const [industryId, setIndustryId] = useState(null);
   const [categoryId, setCategoryId] = useState('');
+  const [userId, setUserId] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    price: '',
+    category: '',
+    subCategory: '',
+    image: null,
+    wholesaleStock: '',
+    quantity: '',
+    expireDate: ''
+  });
 
-  // Get industry from user token
+  // Get industry and userId from localStorage
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      setIndustryId(payload.industry);
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (token && user) {
+      setIndustryId(user.industry);
+      setUserId(user._id);
     }
   }, []);
 
-  // fetch categories for user's industry
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        if (!industryId) return;
-        const response = await axios.get(`http://localhost:5000/categories/byIndustry/${industryId}`);
-        setCategories(response.data.categories);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-    fetchCategories();
+    if (!industryId) return;
+    axios.get(`http://localhost:5000/categories/byIndustry/${industryId}`)
+      .then(res => setCategories(res.data.categories))
+      .catch(err => console.error('Error fetching categories:', err));
   }, [industryId]);
 
-  // fetch sub-categories
   useEffect(() => {
-    const fetchSubCategories = async () => {
-        setSubCategories([]); // Reset sub-categories when category changes
-        try {
-            if (!categoryId) return;
-            const response = await axios.get(`http://localhost:5000/subcategories/byCategory/${categoryId}`);
-            setSubCategories(response.data.subCategories);
-        } catch (error) {
-            console.error('Error fetching sub-categories:', error);
-        }
-    };
-    fetchSubCategories();
+    if (!categoryId) return;
+    setSubCategories([]);
+    axios.get(`http://localhost:5000/subcategories/byCategory/${categoryId}`)
+      .then(res => setSubCategories(res.data.subCategories))
+      .catch(err => console.error('Error fetching sub-categories:', err));
   }, [categoryId]);
+
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'file' ? files[0] : value
+    }));
+    if (name === 'category') setCategoryId(value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const token = localStorage.getItem('token');
+      const data = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value) data.append(key, value);
+      });
+      data.append('userID', userId); // send userID (can remove if backend uses token only)
+
+      await axios.post('http://localhost:5000/products/add', data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      alert('Product added successfully!');
+      // Optionally reset form
+      setFormData({
+        name: '',
+        description: '',
+        price: '',
+        category: '',
+        subCategory: '',
+        image: null,
+        wholesaleStock: '',
+        quantity: '',
+        expireDate: ''
+      });
+    } catch (err) {
+      console.error('Error adding product:', err);
+      alert('Failed to add product.');
+    }
+  };
 
   return (
     <div>
@@ -65,64 +110,43 @@ function ManageProducts() {
         <h1 className="text-2xl font-bold text-center mt-8">Manage Products</h1>
 
         <div className="flex justify-center items-center mt-4">
-          <form className="w-1/2 flex flex-column gap-3">
+          <form className="w-1/2 flex flex-column gap-3" onSubmit={handleSubmit}>
             <div className="forms">
-              <input type="text" className="form-control" name="productName" placeholder="Product Name" required />
-              <input type="text" className="form-control" name="productDescription" placeholder="Product Description" required />
+              <input type="text" className="form-control" name="name" placeholder="Product Name" value={formData.name} onChange={handleChange} required />
+              <input type="text" className="form-control" name="description" placeholder="Product Description" value={formData.description} onChange={handleChange} required />
             </div>
 
             <div className="forms">
-                <input type="number" className="form-control mt-2" name="productPrice" placeholder="Product Price" required />
-                <select className="form-control mt-2" name="productCategory" required value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-                    <option value="">Select Category</option>
-                    {categories.map((category) => (
-                        <option key={category._id} value={category._id}>{category.name}</option>
-                    ))}
-                </select>
-
-            </div>
-
-            <div className="forms">
-              <select className="form-control mt-2" name="productSubCategory" required disabled={!categoryId || subCategories.length === 0}>
-                <option value="">Select Sub-Category</option>
-                {subCategories.map((subCategory) => (
-                  <option key={subCategory._id} value={subCategory._id}>{subCategory.name}</option>
+              <input type="number" className="form-control mt-2" name="price" placeholder="Product Price" value={formData.price} onChange={handleChange} required />
+              <select className="form-control mt-2" name="category" value={formData.category} onChange={handleChange} required>
+                <option value="">Select Category</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>{cat.name}</option>
                 ))}
               </select>
-              <input type="file" className="form-control mt-2" name="productImage" />
             </div>
 
             <div className="forms">
-              <input type="number" className="form-control mt-2" name="productStock" placeholder="Wholesale Stock" required />
-              <input type="number" className="form-control mt-2" name="productQuantity" placeholder="Product Quantity" required />
+              <select className="form-control mt-2" name="subCategory" value={formData.subCategory} onChange={handleChange} required disabled={!categoryId || subCategories.length === 0}>
+                <option value="">Select Sub-Category</option>
+                {subCategories.map((subCat) => (
+                  <option key={subCat._id} value={subCat._id}>{subCat.name}</option>
+                ))}
+              </select>
+              <input type="file" className="form-control mt-2" name="image" onChange={handleChange} />
             </div>
 
             <div className="forms">
-              <input type="date" className="form-control mt-2 w-50" name="productExpireDate" placeholder="Expire Date" required />
+              <input type="number" className="form-control mt-2" name="wholesaleStock" placeholder="Wholesale Stock" value={formData.wholesaleStock} onChange={handleChange} required />
+              <input type="number" className="form-control mt-2" name="quantity" placeholder="Product Quantity" value={formData.quantity} onChange={handleChange} required />
+            </div>
+
+            <div className="forms">
+              <input type="date" className="form-control mt-2 w-50" name="expireDate" value={formData.expireDate} onChange={handleChange} required />
             </div>
 
             <button type="submit" className="btn btn-primary mt-3">Add Product</button>
           </form>
-        </div>
-
-        <div className="product-list mt-3">
-          <table className="table table-striped mt-4">
-            <thead>
-              <tr>
-                <th>Product Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Sub-Category</th>
-                <th>Stock</th>
-                <th>Expire Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Add products dynamically here */}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

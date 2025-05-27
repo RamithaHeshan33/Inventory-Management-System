@@ -13,6 +13,9 @@ app.use(express.json());
 app.use(cors());
 app.use("/", indexRoutes);
 
+// Serve static files from the "uploads" directory
+app.use("/uploads", express.static("uploads"));
+
 mongoose.connect(MONGO_URI)
 .then(() => {console.log("Connected to MongoDB")})
 .then(() => {app.listen(PORT);})
