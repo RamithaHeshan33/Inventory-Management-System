@@ -8,7 +8,7 @@ import '../../../CSS/Home.css'
 function ManageProducts() {
 
     const [categories, setCategories] = useState([]);
-    // const [subCategories, setSubCategories] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
 
     //fetch categories from backend
     useEffect(() => {
@@ -22,6 +22,20 @@ function ManageProducts() {
             }
         };
         fetchCategories();
+    }, []);
+
+    //fetch sub-categories from backend
+    useEffect(() => {
+        const fetchSubCategories = async() => {
+            try {
+                const response = await axios.get('http://localhost:5000/subcategories');
+                setSubCategories(response.data.subCategories);
+            }
+            catch(error) {
+                console.error('Error fetching sub-categories:', error);
+            }
+        };
+        fetchSubCategories();
     }, []);
 
   return (
@@ -59,7 +73,9 @@ function ManageProducts() {
                 <div className="forms">
                     <select className="form-control mt-2" name="productSubCategory" required>
                         <option value="">Select Sub-Category</option>
-                        {/* Add sub-categories dynamically here */}
+                        {subCategories.map((SubCategory) => (
+                            <option key={SubCategory._id} value={SubCategory._id}>{SubCategory.name}</option>
+                        ))}
                     </select>
                     <input type="file" className="form-control mt-2" name="productImage" />
                 </div>
