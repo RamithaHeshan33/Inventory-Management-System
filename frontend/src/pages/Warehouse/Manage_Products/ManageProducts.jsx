@@ -9,6 +9,7 @@ function ManageProducts() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [industryId, setIndustryId] = useState(null);
+  const [categoryId, setCategoryId] = useState('');
 
   // Get industry from user token
   useEffect(() => {
@@ -36,15 +37,17 @@ function ManageProducts() {
   // fetch sub-categories
   useEffect(() => {
     const fetchSubCategories = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/subcategories');
-        setSubCategories(response.data.subCategories);
-      } catch (error) {
-        console.error('Error fetching sub-categories:', error);
-      }
+        setSubCategories([]); // Reset sub-categories when category changes
+        try {
+            if (!categoryId) return;
+            const response = await axios.get(`http://localhost:5000/subcategories/byCategory/${categoryId}`);
+            setSubCategories(response.data.subCategories);
+        } catch (error) {
+            console.error('Error fetching sub-categories:', error);
+        }
     };
     fetchSubCategories();
-  }, []);
+  }, [categoryId]);
 
   return (
     <div>
@@ -69,17 +72,18 @@ function ManageProducts() {
             </div>
 
             <div className="forms">
-              <input type="number" className="form-control mt-2" name="productPrice" placeholder="Product Price" required />
-              <select className="form-control mt-2" name="productCategory" required>
-                <option value="">Select Category</option>
-                {categories.map((category) => (
-                  <option key={category._id} value={category._id}>{category.name}</option>
-                ))}
-              </select>
+                <input type="number" className="form-control mt-2" name="productPrice" placeholder="Product Price" required />
+                <select className="form-control mt-2" name="productCategory" required value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+                    <option value="">Select Category</option>
+                    {categories.map((category) => (
+                        <option key={category._id} value={category._id}>{category.name}</option>
+                    ))}
+                </select>
+
             </div>
 
             <div className="forms">
-              <select className="form-control mt-2" name="productSubCategory" required>
+              <select className="form-control mt-2" name="productSubCategory" required disabled={!categoryId || subCategories.length === 0}>
                 <option value="">Select Sub-Category</option>
                 {subCategories.map((subCategory) => (
                   <option key={subCategory._id} value={subCategory._id}>{subCategory.name}</option>

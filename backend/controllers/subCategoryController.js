@@ -122,3 +122,22 @@ const deleteSubCategory = async(req, res) => {
 }
 
 exports.deleteSubCategory = deleteSubCategory;
+
+// get sub categories by category
+const getSubCategoriesByCategory = async(req, res) => {
+    const {categoryId} = req.params;
+
+    try {
+        const subCategories = await subCategoryModel.find({category: categoryId});
+        if(!subCategories || subCategories.length === 0) {
+            return res.status(404).json({message: "No sub categories found for this category"});
+        }
+        res.status(200).json({message: "Sub categories retrieved successfully", subCategories});
+    }
+    catch(error) {
+        console.error("Error fetching sub categories by category:", error);
+        res.status(500).json({message: "Server error"});
+    }
+}
+
+exports.getSubCategoriesByCategory = getSubCategoriesByCategory;
