@@ -2,11 +2,21 @@ import React from 'react'
 import Dashboard from '../../../components/Dashboard/AdminDashTemp'
 import '../../../CSS/ManageProducts.css'
 import '../../../CSS/Dashboards.css'
+import '../../../CSS/Home.css'
 
 function ManageProducts() {
   return (
     <div>
         <Dashboard role="admin" page="manage-products" />
+        <video
+            autoPlay
+            loop
+            muted
+            className="video-background"
+            style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: -1 }}
+        >
+            <source src="/res/background.mp4" type="video/mp4" />
+        </video>
         <div className="content">
             <h1 className="text-2xl font-bold text-center mt-8">Manage Products</h1>
 
@@ -35,11 +45,35 @@ function ManageProducts() {
 
                 <div className="forms">
                     <input type="number" className="form-control mt-2" name="productStock" placeholder="Wholesale Stock" required/>
-                    <input type="date" className="form-control mt-2" name="productExpireDate" placeholder="Expire Date" required/>
+                    <input type="number" className="form-control mt-2" name="productQuantity" placeholder="Product Quantity" required/>
+                </div>
+
+                <div className="forms">
+                    <input type="date" className="form-control mt-2 w-50" name="productExpireDate" placeholder="Expire Date" required/>
                 </div>
 
                     <button type="submit" className="btn btn-primary mt-3">Add Product</button>
                 </form>
+            </div>
+
+            <div className="product-list mt-3">
+                <table className="table table-striped mt-4">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Sub-Category</th>
+                            <th>Stock</th>
+                            <th>Expire Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {/* Add products dynamically here */}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
