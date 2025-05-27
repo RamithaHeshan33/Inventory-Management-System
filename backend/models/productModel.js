@@ -24,7 +24,7 @@ const productSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSIHAgAt1qr3dZoRVKjpw4p2qddppl7TRnog&s"
+        default: null,
     },
     wholesaleStock: {
         type: Number,

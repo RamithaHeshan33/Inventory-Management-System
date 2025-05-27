@@ -11,6 +11,8 @@ function ManageProducts() {
   const [industryId, setIndustryId] = useState(null);
   const [categoryId, setCategoryId] = useState('');
   const [userId, setUserId] = useState('');
+  const [userProducts, setUserProducts] = useState([]);
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -27,12 +29,14 @@ function ManageProducts() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
+    console.log('Loaded user from localStorage:', user);
     if (token && user) {
       setIndustryId(user.industry);
-      setUserId(user._id);
+      setUserId(user.userId);
     }
   }, []);
 
+  // Fetch categories based on industry
   useEffect(() => {
     if (!industryId) return;
     axios.get(`http://localhost:5000/categories/byIndustry/${industryId}`)
@@ -40,6 +44,7 @@ function ManageProducts() {
       .catch(err => console.error('Error fetching categories:', err));
   }, [industryId]);
 
+  // Fetch sub-categories based on selected category
   useEffect(() => {
     if (!categoryId) return;
     setSubCategories([]);
@@ -57,6 +62,32 @@ function ManageProducts() {
     if (name === 'category') setCategoryId(value);
   };
 
+  useEffect(() => {
+    const fetchUserProducts = async () => {
+      const token = localStorage.getItem('token');
+      if (!userId || !token) return;
+
+      try {
+        const response = await axios.get(`http://localhost:5000/products/getByUserId/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log('API Response:', response.data);
+
+        const products = Array.isArray(response.data)
+          ? response.data
+          : response.data.products;
+
+        setUserProducts(products || []);
+      } catch (error) {
+        console.error("Error fetching user products:", error);
+      }
+    };
+
+    fetchUserProducts();
+  }, [userId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,7 +97,7 @@ function ManageProducts() {
       Object.entries(formData).forEach(([key, value]) => {
         if (value) data.append(key, value);
       });
-      data.append('userID', userId); // send userID (can remove if backend uses token only)
+      data.append('userID', userId); // if backend requires it
 
       await axios.post('http://localhost:5000/products/add', data, {
         headers: {
@@ -76,7 +107,6 @@ function ManageProducts() {
       });
 
       alert('Product added successfully!');
-      // Optionally reset form
       setFormData({
         name: '',
         description: '',
@@ -106,6 +136,7 @@ function ManageProducts() {
       >
         <source src="/res/background.mp4" type="video/mp4" />
       </video>
+
       <div className="content">
         <h1 className="text-2xl font-bold text-center mt-8">Manage Products</h1>
 
@@ -148,6 +179,39 @@ function ManageProducts() {
             <button type="submit" className="btn btn-primary mt-3">Add Product</button>
           </form>
         </div>
+
+        <div className="container mt-5">
+          <h2 className="text-xl font-bold mb-4">Your Products</h2>
+          {userProducts.length > 0 ? (
+            <div className="row row-cols-1 row-cols-md-3 g-4">
+              {userProducts.map(product => (
+                <div key={product._id} className="col">
+                  <div className="card h-100">
+                  <img
+                    src={product.image ? `http://localhost:5000/${product.image}` : '/res/default-product.png'}
+                    className="card-img-top"
+                    alt={product.name}
+                    style={{ objectFit: 'cover', height: '200px' }}
+                  />
+                    <div className="card-body">
+                      <h5 className="card-title">{product.name}</h5>
+                      <p className="card-text">{product.description}</p>
+                      <p className="card-text"><strong>Price:</strong> ${product.price}</p>
+                      <p className="card-text"><strong>Category:</strong> {product.category?.name || product.category || 'N/A'}</p>
+                      <p className="card-text"><strong>Sub-Category:</strong> {product.subCategory?.name || product.subCategory || 'N/A'}</p>
+                      <p className="card-text"><strong>Stock:</strong> {product.wholesaleStock}</p>
+                      <p className="card-text"><strong>Quantity:</strong> {product.quantity}</p>
+                      <p className="card-text"><strong>Expire Date:</strong> {product.expireDate ? new Date(product.expireDate).toLocaleDateString() : 'N/A'}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No products found.</p>
+          )}
+        </div>
+
       </div>
     </div>
   );

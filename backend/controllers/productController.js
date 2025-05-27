@@ -156,3 +156,39 @@ const getProductByMultipleFields = async (req, res) => {
 };
 
 exports.getProductByMultipleFields = getProductByMultipleFields;
+
+// get products by userid
+const normalizeImagePath = (product) => {
+    if (product.image) {
+      product.image = product.image.split('\\').join('/');
+    }
+    return product;
+  };
+
+const getProductsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+    const products = await ProductModel.find({ userID: userId })
+        .populate('category')
+        .populate('subCategory');
+
+    if (!products || products.length === 0) {
+        return res.status(404).json({ message: "No products found for this user" });
+    }
+
+    // Normalize images for all products
+    const normalizedProducts = products.map(prod => {
+        let p = prod.toObject(); // convert mongoose doc to plain obj
+        if(p.image) p.image = p.image.split('\\').join('/');
+        return p;
+    });
+
+    res.status(200).json({ message: "Products retrieved successfully", products: normalizedProducts });
+    } catch (error) {
+    console.error("Error retrieving products by user ID:", error);
+    res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+exports.getProductsByUserId = getProductsByUserId;

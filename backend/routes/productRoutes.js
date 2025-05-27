@@ -20,6 +20,7 @@ router.get("/getAll", productController.getAllProducts);
 router.put("/update/:id", productController.updateProducts);
 router.delete("/delete/:id", productController.deleteProducts);
 router.post("/getByMultipleFields", productController.getProductByMultipleFields);
+router.get('/getByUserId/:userId', authenticate, productController.getProductsByUserId);
 
 // router.get("/getByCategory", productController.getProductsByCategory);
 

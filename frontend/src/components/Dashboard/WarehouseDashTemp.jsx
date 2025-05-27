@@ -34,7 +34,7 @@ function WarehouseDashTemp() {
                 <h2 className="text-center mb-3">Welcome {userName}</h2>
                 <ul className="list-group">
                     
-                    <li className="list-group-item nav-link-light"><Link to="/admin/dashboard" className='text-decoration-none text-light nav-link-light'>Dashboard</Link></li>
+                    <li className="list-group-item nav-link-light"><Link to="/warehouse/dashboard" className='text-decoration-none text-light nav-link-light'>Dashboard</Link></li>
                     
                     <li className="list-group-item text-light nav-link-light">
                         <div onClick={() => toggleSubMenu("products")} style={{ cursor: "pointer" }}>
