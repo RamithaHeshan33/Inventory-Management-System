@@ -1,10 +1,29 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import axios from 'axios'
 import Dashboard from '../../../components/Dashboard/AdminDashTemp'
 import '../../../CSS/ManageProducts.css'
 import '../../../CSS/Dashboards.css'
 import '../../../CSS/Home.css'
 
 function ManageProducts() {
+
+    const [categories, setCategories] = useState([]);
+    // const [subCategories, setSubCategories] = useState([]);
+
+    //fetch categories from backend
+    useEffect(() => {
+        const fetchCategories = async() => {
+            try {
+                const response = await axios.get('http://localhost:5000/categories/all');
+                setCategories(response.data.categories);
+            }
+            catch(error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+        fetchCategories();
+    }, []);
+
   return (
     <div>
         <Dashboard role="admin" page="manage-products" />
@@ -31,7 +50,9 @@ function ManageProducts() {
                     <input type="number" className="form-control mt-2" name="productPrice" placeholder="Product Price" required/>
                     <select className="form-control mt-2" name="productCategory" required>
                         <option value="">Select Category</option>
-                        {/* Add categories dynamically here */}
+                        {categories.map((Category) => (
+                            <option key={Category._id} value={Category._id}>{Category.name}</option>
+                        ))}
                     </select>
                 </div>
 
