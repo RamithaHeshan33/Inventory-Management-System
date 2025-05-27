@@ -123,3 +123,24 @@ const deleteCategory = async (req, res) => {
 }
 
 exports.deleteCategory = deleteCategory;
+
+// get categories by industry
+const getCategoriesByIndustry = async (req, res) => {
+    const {industryId} = req.params;
+
+    try {
+        const categories = await categoryModel.find({industry: industryId});
+
+        if(!categories || categories.length === 0) {
+            return res.status(404).json({message: "No categories found for this industry"});
+        }
+
+        res.status(200).json({message: "Categories retrieved successfully", categories});
+    }
+
+    catch(error) {
+        res.status(500).json({message: "Server error"});
+    }
+}
+
+exports.getCategoriesByIndustry = getCategoriesByIndustry;

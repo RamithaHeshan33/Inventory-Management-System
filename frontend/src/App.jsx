@@ -14,10 +14,14 @@ import Contact from './pages/Contact/Contact';
 
 // Dashboard pages
 import AdminDashboard from './pages/Admin/Dashboard/AdminDashboard';
-import WarehouseDashboard from './pages/Warehouse/WarehouseDashboard';
+import WarehouseDashboard from './pages/Warehouse/Dashboard/WarehouseDashboard';
 
 // Admin pages
 import ManageProducts from './pages/Admin/Manage_Products/ManageProducts';
+
+
+// Warehouse pages
+import WareHouseManageProducts from './pages/Warehouse/Manage_Products/ManageProducts';
 
 function App() {
 
@@ -36,6 +40,9 @@ function App() {
         <Route path="/warehouse/dashboard" element={<WarehouseDashboard />} />
 
         <Route path="/admin/manage_products" element={<ManageProducts />} />
+
+        
+        <Route path="/warehouse/manage_products" element={<WareHouseManageProducts />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>

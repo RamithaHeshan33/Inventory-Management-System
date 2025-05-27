@@ -38,12 +38,12 @@ function WarehouseDashTemp() {
                     
                     <li className="list-group-item text-light nav-link-light">
                         <div onClick={() => toggleSubMenu("products")} style={{ cursor: "pointer" }}>
-                            Manage Products {openMenu === "products" ? "▾" : "▸"}
+                            Products {openMenu === "products" ? "▾" : "▸"}
                         </div>
                         {openMenu === "products" && (
                             <ul className="list-group mt-2">
                                 <li className="list-group-item p-1">
-                                    <Link to="/warehouse/products/all" className="nav-link-light" style={{ padding: '0.2rem' }}>All Products</Link>
+                                    <Link to="/warehouse/manage_products" className="nav-link-light" style={{ padding: '0.2rem' }}>Manage Products</Link>
                                 </li>
                                 <li className="list-group-item p-1">
                                     <Link to="/warehouse/products/add" className="nav-link-light" style={{ padding: '0.2rem' }}>Add Products</Link>
