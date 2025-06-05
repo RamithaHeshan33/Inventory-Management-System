@@ -4,47 +4,62 @@ const subCategoryModel = require('../models/subCategoryModel');
 const userModel = require('../models/userModel');
 
 const addProducts = async (req, res) => {
-    const { name, description, price, category, subCategory, wholesaleStock, expireDate, quantity } = req.body;
-    const image = req.file ? req.file.path : undefined;
-    const userID = req.user._id;
-
     try {
-        const categoryExists = await CategoryModel.findById(category);
-        if (!categoryExists) {
-            return res.status(400).json({ message: "Invalid category ID" });
-        }
-
-        const subCategoryExists = await subCategoryModel.findById(subCategory);
-        if (!subCategoryExists) {
-            return res.status(400).json({ message: "Invalid sub-category ID" });
-        }
-
-        const userExists = await userModel.findById(userID);
-        if(!userExists) {
-            return res.status(400).json({ message: "Invalid user ID" });
-        }
-
-        const newProduct = new ProductModel({
+        // Extract form fields (all will be strings)
+        const {
             name,
             description,
             price,
             category,
             subCategory,
-            image,
             wholesaleStock,
             expireDate,
-            quantity,
+            quantity
+        } = req.body;
+
+        const image = req.file ? req.file.path : undefined;
+        const userID = req.user._id;
+
+        // Validate required fields
+        if (!name || !price || !category || !subCategory) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        // Parse numeric values
+        const parsedPrice = parseFloat(price);
+        const parsedQuantity = parseInt(quantity);
+        const parsedWholesaleStock = parseInt(wholesaleStock);
+
+        const categoryExists = await CategoryModel.findById(category);
+        if (!categoryExists) return res.status(400).json({ message: "Invalid category ID" });
+
+        const subCategoryExists = await subCategoryModel.findById(subCategory);
+        if (!subCategoryExists) return res.status(400).json({ message: "Invalid sub-category ID" });
+
+        const userExists = await userModel.findById(userID);
+        if (!userExists) return res.status(400).json({ message: "Invalid user ID" });
+
+        const newProduct = new ProductModel({
+            name,
+            description,
+            price: parsedPrice,
+            category,
+            subCategory,
+            image,
+            wholesaleStock: parsedWholesaleStock,
+            expireDate: expireDate ? new Date(expireDate) : undefined,
+            quantity: parsedQuantity,
             userID
         });
+
         await newProduct.save();
         res.status(201).json({ message: "Product added successfully", product: newProduct });
-    }
-
-    catch (error) {
+    } catch (error) {
         console.error("Error adding product:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
 
 exports.addProducts = addProducts;
 
@@ -84,32 +99,48 @@ const getAllProducts = async(req, res) => {
 
 exports.getAllProducts = getAllProducts;
 
-const updateProducts = async(req, res) => {
-    const {id} = req.params;
-    const {name, description, price, category, image, wholesaleStock, expireDate, quantity} = req.body;
+const updateProducts = async (req, res) => {
+    const { id } = req.params;
+    const {
+        name,
+        description,
+        price,
+        category,
+        subCategory,
+        wholesaleStock,
+        expireDate,
+        quantity
+    } = req.body;
+
+    const image = req.file ? req.file.path : undefined;
+
     try {
-        const product = await ProductModel.findByIdAndUpdate(id, {
+        const updateFields = {
             name,
             description,
-            price,
+            price: parseFloat(price),
             category,
-            image,
-            wholesaleStock,
-            expireDate,
-            quantity
-        }, {new: true});
+            subCategory,
+            wholesaleStock: parseInt(wholesaleStock),
+            expireDate: expireDate ? new Date(expireDate) : undefined,
+            quantity: parseInt(quantity),
+        };
 
-        if(!product) {
-            return res.status(404).json({message: "Product not found"});
+        if (image) updateFields.image = image;
+
+        const product = await ProductModel.findByIdAndUpdate(id, updateFields, { new: true });
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
         }
-        res.status(200).json({message: "Product updated successfully", product});
-    }
 
-    catch(error) {
+        res.status(200).json({ message: "Product updated successfully", product });
+    } catch (error) {
         console.error("Error updating product:", error);
-        res.status(500).json({message: "Internal server error"});
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+
 
 exports.updateProducts = updateProducts;
 

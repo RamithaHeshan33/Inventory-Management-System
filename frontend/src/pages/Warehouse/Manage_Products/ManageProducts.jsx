@@ -97,7 +97,7 @@ function ManageProducts() {
       Object.entries(formData).forEach(([key, value]) => {
         if (value) data.append(key, value);
       });
-      data.append('userID', userId); // if backend requires it
+      data.append('userID', userId);
 
       await axios.post('http://localhost:5000/products/add', data, {
         headers: {
@@ -107,7 +107,9 @@ function ManageProducts() {
       });
 
       alert('Product added successfully!');
+      window.location.reload();
       setFormData({
+        _id: null,
         name: '',
         description: '',
         price: '',
@@ -196,12 +198,174 @@ function ManageProducts() {
                     <div className="card-body">
                       <h5 className="card-title">{product.name}</h5>
                       <p className="card-text">{product.description}</p>
-                      <p className="card-text"><strong>Price:</strong> ${product.price}</p>
+                      <hr />
+                      <p className="card-text"><strong>Price:</strong> Rs.{product.price}</p>
                       <p className="card-text"><strong>Category:</strong> {product.category?.name || product.category || 'N/A'}</p>
                       <p className="card-text"><strong>Sub-Category:</strong> {product.subCategory?.name || product.subCategory || 'N/A'}</p>
                       <p className="card-text"><strong>Stock:</strong> {product.wholesaleStock}</p>
                       <p className="card-text"><strong>Quantity:</strong> {product.quantity}</p>
                       <p className="card-text"><strong>Expire Date:</strong> {product.expireDate ? new Date(product.expireDate).toLocaleDateString() : 'N/A'}</p>
+
+                     <div className='d-flex gap-2'>
+                        {/* <!-- Button trigger modal --> */}
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#updateModal-${product._id}`}>
+                          Update
+                        </button>
+
+                        {/* <!-- Modal --> */}
+                        <div className="modal fade" id={`updateModal-${product._id}`} tabIndex="-1" aria-labelledby={`updateModalLabel-${product._id}`}  aria-hidden="true">
+                          <div className="modal-dialog">
+                            <div className="modal-content">
+                              <div className="modal-header">
+                                <h1 className="modal-title fs-5" id={`updateModalLabel-${product._id}`}>Update Products - {product.name}</h1>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div className="modal-body">
+                                <form
+                                  onSubmit={async (e) => {
+                                    e.preventDefault();
+                                    const token = localStorage.getItem('token');
+                                    const formElements = e.target.elements;
+
+                                    const data = new FormData();
+                                    data.append('name', formElements.name.value);
+                                    data.append('description', formElements.description.value);
+                                    data.append('price', formElements.price.value);
+                                    data.append('wholesaleStock', formElements.wholesaleStock.value);
+                                    data.append('quantity', formElements.quantity.value);
+                                    data.append('expireDate', formElements.expireDate.value);
+                                    data.append('category', formElements.category.value);
+                                    data.append('subCategory', formElements.subCategory.value);
+
+                                    if (formElements.image.files[0]) {
+                                      data.append('image', formElements.image.files[0]);
+                                    }
+
+                                    try {
+                                      await axios.put(`http://localhost:5000/products/update/${product._id}`, data, {
+                                        headers: {
+                                          Authorization: `Bearer ${token}`,
+                                          'Content-Type': 'multipart/form-data'
+                                        }
+                                      });
+                                      alert('Product updated successfully!');
+                                      window.location.reload();
+                                    } catch (error) {
+                                      console.error('Error updating product:', error);
+                                      alert('Failed to update product.');
+                                    }
+                                  }}
+
+                                >
+                                  <div className="mb-2">
+                                    <label className='form-label'>Product Name</label>
+                                    <input className="form-control" name="name" defaultValue={product.name} required />
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Product Description</label>
+                                    <textarea className="form-control" name="description" defaultValue={product.description} required />
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Product Price</label>
+                                    <input type="number" className="form-control" name="price" defaultValue={product.price} required />
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Wholesale Stock Number</label>
+                                    <input type="number" className="form-control" name="wholesaleStock" defaultValue={product.wholesaleStock} required />
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Quantity</label>
+                                    <input type="number" className="form-control" name="quantity" defaultValue={product.quantity} required />
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Expire Date</label>
+                                    <input type="date" className="form-control" name="expireDate" defaultValue={product.expireDate?.split('T')[0]} required />
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Category</label>
+                                    <select className="form-control" name="category" defaultValue={product.category?._id || product.category} onChange={handleChange} required>
+                                      <option value="">Select Category</option>
+                                      {categories.map((cat) => (
+                                        <option key={cat._id} value={cat._id}>{cat.name}</option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Sub-Category</label>
+                                    <select
+                                      className="form-control mt-2"
+                                      name="subCategory"
+                                      defaultValue={product.subCategory?._id || product.subCategory || ''}
+                                      required
+                                    >
+                                      <option value="">Select Sub-Category</option>
+                                      {subCategories.map((subCat) => (
+                                        <option key={subCat._id} value={subCat._id}>{subCat.name}</option>
+                                      ))}
+                                    </select>
+
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Product Image</label>
+                                    <input type="file" className="form-control" name="image" />
+                                  </div>
+
+                                  <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                                      Cancel
+                                    </button>
+                                    <button type="submit" className="btn btn-primary">
+                                      Save Changes
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Delete Modal */}
+                        <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target={`#deleteModal-${product._id}`}>
+                          Delete
+                        </button>
+
+                        <div className="modal fade" id={`deleteModal-${product._id}`} tabIndex="-1" aria-labelledby={`deleteModalLabel-${product._id}`} aria-hidden="true">
+                          <div className="modal-dialog">
+                            <div className="modal-content">
+                              <div className="modal-header">
+                                <h5 className="modal-title" id={`deleteModalLabel-${product._id}`}>Delete Product</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div className="modal-body">
+                                Are you sure you want to delete this product?
+                              </div>
+                              <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" className="btn btn-danger"
+                                  onClick={async () => {
+                                    const token = localStorage.getItem('token');
+                                    try {
+                                      await axios.delete(`http://localhost:5000/products/delete/${product._id}`, {
+                                        headers: {
+                                          Authorization: `Bearer ${token}`
+                                        }
+                                      });
+                                      alert('Product deleted successfully!');
+                                      window.location.reload();
+                                    } catch (error) {
+                                      console.error('Error deleting product:', error);
+                                      alert('Failed to delete product.');
+                                    }
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      
+                      </div>
                     </div>
                   </div>
                 </div>
