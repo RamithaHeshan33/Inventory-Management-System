@@ -4,30 +4,41 @@ import '../../CSS/Dashboards.css'
 
 function Dashboard() {
     const [openMenu, setOpenMenu] = useState(null);
-    const [userName, setUserName] = useState('');
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
-
-        if (!token || !storedUser) {
+        const [userName, setUserName] = useState('');
+        const navigate = useNavigate();
+    
+        useEffect(() => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const userRole = user?.role?.trim().toLowerCase();
+            console.log('User:', user);
+    
+            if (!userRole || userRole !== 'admin') {
+            console.log('Redirecting to /login: Invalid or missing role', userRole);
+            navigate('/login', { replace: true });
+            }
+        }, [navigate]);
+    
+        useEffect(() => {
+            const token = localStorage.getItem('token');
+            const storedUser = localStorage.getItem('user');
+    
+            if (!token || !storedUser) {
+                navigate('/login');
+            } else {
+                const user = JSON.parse(storedUser);
+                setUserName(user.name);
+            }
+        }, [navigate]);
+    
+        const handleLogout = () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
             navigate('/login');
-        } else {
-            const user = JSON.parse(storedUser);
-            setUserName(user.name);
-        }
-    }, [navigate]);
-
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-    };
-
-    const toggleSubMenu = (menu) => {
-        setOpenMenu(openMenu === menu ? null : menu);
-    };
+        };
+    
+        const toggleSubMenu = (menu) => {
+            setOpenMenu(openMenu === menu ? null : menu);
+        };
 
     return (
         <div>
