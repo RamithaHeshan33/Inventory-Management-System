@@ -14,21 +14,21 @@ const addProducts = async (req, res) => {
             subCategory,
             wholesaleStock,
             expireDate,
-            quantity
+            quantity,
+            size
         } = req.body;
 
         const image = req.file ? req.file.path : undefined;
         const userID = req.user._id;
 
         // Validate required fields
-        if (!name || !price || !category || !subCategory) {
+        if (!name || !price || !category || !subCategory || !wholesaleStock || !quantity || !size) {
             return res.status(400).json({ message: "Missing required fields" });
         }
 
         // Parse numeric values
         const parsedPrice = parseFloat(price);
         const parsedQuantity = parseInt(quantity);
-        const parsedWholesaleStock = parseInt(wholesaleStock);
 
         const categoryExists = await CategoryModel.findById(category);
         if (!categoryExists) return res.status(400).json({ message: "Invalid category ID" });
@@ -46,9 +46,10 @@ const addProducts = async (req, res) => {
             category,
             subCategory,
             image,
-            wholesaleStock: parsedWholesaleStock,
+            wholesaleStock,
             expireDate: expireDate ? new Date(expireDate) : undefined,
             quantity: parsedQuantity,
+            size,
             userID
         });
 
@@ -109,7 +110,8 @@ const updateProducts = async (req, res) => {
         subCategory,
         wholesaleStock,
         expireDate,
-        quantity
+        quantity,
+        size
     } = req.body;
 
     const image = req.file ? req.file.path : undefined;
@@ -121,9 +123,10 @@ const updateProducts = async (req, res) => {
             price: parseFloat(price),
             category,
             subCategory,
-            wholesaleStock: parseInt(wholesaleStock),
+            wholesaleStock,
             expireDate: expireDate ? new Date(expireDate) : undefined,
             quantity: parseInt(quantity),
+            size
         };
 
         if (image) updateFields.image = image;

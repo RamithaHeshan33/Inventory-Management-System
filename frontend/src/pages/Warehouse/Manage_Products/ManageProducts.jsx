@@ -22,6 +22,7 @@ function ManageProducts() {
     image: null,
     wholesaleStock: '',
     quantity: '',
+    size: '',
     expireDate: ''
   });
 
@@ -118,6 +119,7 @@ function ManageProducts() {
         image: null,
         wholesaleStock: '',
         quantity: '',
+        size: '',
         expireDate: ''
       });
     } catch (err) {
@@ -176,6 +178,7 @@ function ManageProducts() {
 
             <div className="forms">
               <input type="date" className="form-control mt-2 w-50" name="expireDate" value={formData.expireDate} onChange={handleChange} required />
+              <input type="text" className="form-control mt-2" name="size" placeholder="Product Size" value={formData.size} onChange={handleChange} required />
             </div>
 
             <button type="submit" className="btn btn-primary mt-3">Add Product</button>
@@ -204,6 +207,7 @@ function ManageProducts() {
                       <p className="card-text"><strong>Sub-Category:</strong> {product.subCategory?.name || product.subCategory || 'N/A'}</p>
                       <p className="card-text"><strong>Stock:</strong> {product.wholesaleStock}</p>
                       <p className="card-text"><strong>Quantity:</strong> {product.quantity}</p>
+                      <p className="card-text"><strong>Size:</strong> {product.size}</p>
                       <p className="card-text"><strong>Expire Date:</strong> {product.expireDate ? new Date(product.expireDate).toLocaleDateString() : 'N/A'}</p>
 
                      <div className='d-flex gap-2'>
@@ -233,6 +237,7 @@ function ManageProducts() {
                                     data.append('price', formElements.price.value);
                                     data.append('wholesaleStock', formElements.wholesaleStock.value);
                                     data.append('quantity', formElements.quantity.value);
+                                    data.append('size', formElements.size.value);
                                     data.append('expireDate', formElements.expireDate.value);
                                     data.append('category', formElements.category.value);
                                     data.append('subCategory', formElements.subCategory.value);
@@ -271,11 +276,15 @@ function ManageProducts() {
                                   </div>
                                   <div className="mb-2">
                                     <label className='form-label'>Wholesale Stock Number</label>
-                                    <input type="number" className="form-control" name="wholesaleStock" defaultValue={product.wholesaleStock} required />
+                                    <input type="text" className="form-control" name="wholesaleStock" defaultValue={product.wholesaleStock} required />
                                   </div>
                                   <div className="mb-2">
                                     <label className='form-label'>Quantity</label>
                                     <input type="number" className="form-control" name="quantity" defaultValue={product.quantity} required />
+                                  </div>
+                                  <div className="mb-2">
+                                    <label className='form-label'>Size</label>
+                                    <input type="text" className="form-control" name="size" defaultValue={product.size} required />
                                   </div>
                                   <div className="mb-2">
                                     <label className='form-label'>Expire Date</label>
