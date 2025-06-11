@@ -5,7 +5,6 @@ import Dashboard from '../../../components/Dashboard/RetailerDashTemp'
 function MakeOrder() {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [cart] = useState([]);
   const navigate = useNavigate();
 
   const userId = JSON.parse(localStorage.getItem('user'))?.userId;
@@ -84,7 +83,7 @@ function MakeOrder() {
       <div className="content">
         <h1 className="text-2xl font-bold text-center mt-8">Make Orders</h1>
 
-        <button className="btn btn-success mt-4" onClick={() => navigate('/retailer/view_cart', { state: { cart } })}>
+        <button className="btn btn-success mt-4" onClick={() => navigate('/retailer/view_cart')}>
           View Cart
         </button>
         {/* Search Bar */}
