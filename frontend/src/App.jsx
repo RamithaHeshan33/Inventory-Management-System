@@ -27,6 +27,7 @@ import WareHouseManageProducts from './pages/Warehouse/Manage_Products/ManagePro
 
 // Retailer pages
 import MakeOrder from './pages/Retailer/Make_Orders/MakeOrder';
+import ViewCart from './pages/Retailer/Make_Orders/ViewCart';
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
 
         {/* Retailer Pages */}
         <Route path='/retailer/make_orders' element={<MakeOrder />} />
+        <Route path='/retailer/view_cart' element={<ViewCart />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>

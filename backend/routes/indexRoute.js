@@ -8,6 +8,8 @@ const retailerStockRoutes = require("./retailerStockRoutes");
 const categoryRoutes = require("./categoryRoutes");
 const industryRoutes = require("./industryRoutes");
 const subCategoryRoutes = require("./subCategoryRoutes");
+const orderRoutes = require("./orderRoutes");
+const cartRoutes = require("./cartRoutes");
 
 // User Routes
 router.use("/users", userRoutes);
@@ -26,5 +28,11 @@ router.use("/subcategories", subCategoryRoutes);
 
 // Industry Routes
 router.use("/industries", industryRoutes);
+
+// Order Routes
+router.use("/orders", orderRoutes);
+
+// Cart Routes
+router.use("/cart", cartRoutes);
 
 module.exports = router;
