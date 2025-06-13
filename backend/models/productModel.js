@@ -43,7 +43,7 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     userID: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId, //warehouse
         ref: "User",
         required: true
     },

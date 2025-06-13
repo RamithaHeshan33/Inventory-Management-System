@@ -58,7 +58,7 @@ function RetailerDashTemp() {
                                     <Link to="/retailer/make_orders" className="nav-link-light" style={{ padding: '0.2rem' }}>Make Orders</Link>
                                 </li>
                                 <li className="list-group-item p-1">
-                                    <Link to="/retailer/manage_orders" className="nav-link-light" style={{ padding: '0.2rem' }}>Manage Orders</Link>
+                                    <Link to="/retailer/my_orders" className="nav-link-light" style={{ padding: '0.2rem' }}>My Orders</Link>
                                 </li>
                             </ul>
                         )}

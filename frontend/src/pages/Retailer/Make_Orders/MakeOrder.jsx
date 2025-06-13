@@ -81,7 +81,7 @@ function MakeOrder() {
       </video>
       
       <div className="content">
-        <h1 className="text-2xl font-bold text-center mt-8">Make Orders</h1>
+        <h1 className="text-2xl fw-bold text-center mt-8">Make Orders</h1>
 
         <button className="btn btn-success mt-4" onClick={() => navigate('/retailer/view_cart')}>
           View Cart

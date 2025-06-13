@@ -29,6 +29,7 @@ import WareHouseManageProducts from './pages/Warehouse/Manage_Products/ManagePro
 import MakeOrder from './pages/Retailer/Make_Orders/MakeOrder';
 import ViewCart from './pages/Retailer/Make_Orders/ViewCart';
 import PaymentSuccess from './pages/Retailer/Make_Orders/PaymentSuccess';
+import MyOrders from './pages/Retailer/MyOrders/MyOrders';
 
 function App() {
 
@@ -57,7 +58,10 @@ function App() {
         <Route path='/retailer/make_orders' element={<MakeOrder />} />
         <Route path='/retailer/view_cart' element={<ViewCart />} />
         <Route path='/retailer/payment_success' element={<PaymentSuccess />} />
+        <Route path='/retailer/my_orders' element={<MyOrders />} />
 
+
+        {/* Catch-all route for 404 Not Found */}
         <Route path='*' element={<NotFound />} />
       </Routes>
     </Router>
