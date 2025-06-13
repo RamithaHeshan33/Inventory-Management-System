@@ -71,6 +71,30 @@ function ViewCart() {
     return total + item.quantity * item.productId.price;
   }, 0);
 
+  const handleCheckout = async () => {
+    console.log("Sending cartItems:", cartItems); // Debug log
+    try {
+      const res = await fetch('http://localhost:5000/api/payment/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cartItems }),
+      });
+  
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Failed to initiate payment');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Something went wrong');
+    }
+  };
+  
+
   return (
     <div>
       <Dashboard role="retailer" />
@@ -140,7 +164,8 @@ function ViewCart() {
 
               <div className="mt-5 text-end">
                 <h4 className="fw-bold">Grand Total: Rs. {grandTotal}</h4>
-                <button className='btn btn-primary'>Proceed</button>
+                <button className='btn btn-primary' onClick={handleCheckout}>Proceed</button>
+
               </div>
             </>
           )}
